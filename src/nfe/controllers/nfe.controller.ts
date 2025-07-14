@@ -11,10 +11,12 @@ import { NfeService } from '../services/nfe.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { NfeEntity } from '../../entity/nfe.entity';
+import { Logger } from '@nestjs/common';
 
 @ApiTags('nfe')
 @Controller('nfe')
 export class NfeController {
+  private readonly logger = new Logger(NfeController.name);
   constructor(private readonly nfeService: NfeService) {}
 
   @Post('create')
@@ -26,8 +28,10 @@ export class NfeController {
   async createNote(@Body() nfe: NfeEntity) {
     try {
       const created = await this.nfeService.create(nfe);
+      this.logger.log('Invoice created successfully');
       return created;
     } catch (error) {
+      this.logger.error('Error creating invoice', error);
       throw new HttpException(
         'Error creating invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -42,6 +46,7 @@ export class NfeController {
     description: 'Successfully retrieved all NFE records',
   })
   findAll() {
+    this.logger.log('Fetching all invoices');
     return this.nfeService.findAll();
   }
 
@@ -59,13 +64,13 @@ export class NfeController {
     try {
       const nfe = await this.nfeService.findOne(+id);
       if (!nfe) {
+        this.logger.warn(`Invoice with ID: ${id} not found`);
         throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
       }
+      this.logger.log(`Fetched invoice with ID: ${id}`);
       return nfe;
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
+      this.logger.error(`Error fetching invoice with ID: ${id}`, error);
       throw new HttpException(
         'Error fetching invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -82,8 +87,10 @@ export class NfeController {
   async deleteAll() {
     try {
       const result = await this.nfeService.deleteAll();
+      this.logger.log('All invoices deleted successfully');
       return result;
     } catch (error) {
+      this.logger.error('Error deleting all invoices', error);
       throw new HttpException(
         'Error deleting all invoices',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -105,13 +112,12 @@ export class NfeController {
     try {
       const result = await this.nfeService.delete(+id);
       if (!result.deleted) {
+        this.logger.warn(`Invoice with ID: ${id} not found for deletion`);
         throw new HttpException(result.message, HttpStatus.NOT_FOUND);
       }
       return result;
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
+      this.logger.error(`Error deleting invoice with ID: ${id}`, error);
       throw new HttpException(
         'Error deleting invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -133,16 +139,16 @@ export class NfeController {
     try {
       const updated = await this.nfeService.update(+id, nfe);
       if (!updated) {
+        this.logger.warn(`Invoice with ID: ${id} not found for update`);
         throw new HttpException(
           'Invoice not found for update',
           HttpStatus.NOT_FOUND,
         );
       }
+      this.logger.log(`Invoice with ID: ${id} updated successfully`);
       return updated;
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
+      this.logger.error(`Error updating invoice with ID: ${id}`, error);
       throw new HttpException(
         'Error updating invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,

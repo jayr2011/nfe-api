@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { NfeEntity } from 'src/entity/nfe.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -27,39 +28,46 @@ import {
 export class NfeService {
   constructor(
     @InjectRepository(NfeEntity)
-    private repo: Repository<NfeEntity>,
+    private repository: Repository<NfeEntity>,
   ) {}
 
+  private readonly logger = new Logger(NfeService.name);
+
   findAll() {
-    return this.repo.find();
+    this.logger.log('Fetching all invoices');
+    return this.repository.find();
   }
 
   findOne(id: number): Promise<NfeEntity | null> {
-    return this.repo.findOne({ where: { id } });
+    this.logger.log(`Fetching invoice with ID: ${id}`);
+    return this.repository.findOne({ where: { id } });
   }
 
   async delete(id: number): Promise<{ message: string; deleted: boolean }> {
     const nfe = await this.findOne(id);
+    this.logger.log(`Attempting to delete invoice with ID: ${id}`);
     if (!nfe) {
+      this.logger.warn(`Invoice with ID: ${id} not found`);
       return { message: 'Invoice not found', deleted: false };
     }
-
-    await this.repo.delete(id);
+    await this.repository.delete(id);
+    this.logger.log(`Deleting invoice with ID: ${id}`);
     return { message: 'Invoice successfully deleted', deleted: true };
   }
 
   async deleteAll(): Promise<{ message: string; deletedCount: number }> {
-    const allNfes = await this.repo.find();
+    const allNfes = await this.repository.find();
     const count = allNfes.length;
-
     if (count === 0) {
+      this.logger.warn('No invoices found to delete');
       return {
         message: 'No invoices found to delete',
         deletedCount: 0,
       };
     }
 
-    await this.repo.clear();
+    await this.repository.clear();
+    this.logger.log(`Deleting all invoices, count: ${count}`);
     return {
       message: `${count} invoice(s) successfully deleted`,
       deletedCount: count,
@@ -69,6 +77,7 @@ export class NfeService {
   async update(id: number, nfe: NfeEntity): Promise<NfeEntity> {
     const existingNfe = await this.findOne(id);
     if (!existingNfe) {
+      this.logger.warn(`Invoice with ID: ${id} not found for update`);
       throw new Error('Invoice not found');
     }
 
@@ -105,8 +114,8 @@ export class NfeService {
       ALIQUOTA_IR,
       ALIQUOTA_ISSQN,
     );
-
-    return this.repo.save(existingNfe);
+    this.logger.log(`Updating invoice with ID: ${id}`);
+    return this.repository.save(existingNfe);
   }
 
   create(nfe: NfeEntity): Promise<NfeEntity> {
@@ -151,7 +160,8 @@ export class NfeService {
     nfe.irValue = ir;
     nfe.estimatedTaxesValue = estimatedTaxesValue;
 
-    const note = this.repo.create(nfe);
-    return this.repo.save(note);
+    const note = this.repository.create(nfe);
+    this.logger.log('Creating a new invoice');
+    return this.repository.save(note);
   }
 }
