@@ -6,6 +6,9 @@
 # Dependency directories
 nfe.db
 
+# github
+/.github
+
 # Logs
 logs
 *.log

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { NfeService } from './nfe.service';
-import { NfeController } from './nfe.controller';
+import { NfeService } from './services/nfe.service';
+import { NfeController } from './controllers/nfe.controller';
 import { NfeEntity } from '../entity/nfe.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -12,7 +12,7 @@ import {
   calculateIr,
   calculateNetValue,
   calculateEstimatedTaxesValue,
-} from './calculations/calculations.services';
+} from '../calculations/calculations.services';
 
 import {
   ALIQUOTA_PIS,
@@ -21,7 +21,7 @@ import {
   ALIQUOTA_INSS,
   ALIQUOTA_IR,
   ALIQUOTA_ISSQN,
-} from '../constants/aliquotas';
+} from '../../constants/aliquotas';
 
 @Injectable()
 export class NfeService {

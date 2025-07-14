@@ -7,10 +7,10 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import { NfeService } from './nfe.service';
+import { NfeService } from '../services/nfe.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { NfeEntity } from '../../src/entity/nfe.entity';
+import { NfeEntity } from '../../entity/nfe.entity';
 
 @ApiTags('nfe')
 @Controller('nfe')

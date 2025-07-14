@@ -53,7 +53,6 @@ export function calculateNetValue(
   inss: number,
   ir: number,
 ): number {
-  // O valor líquido é o valor total menos todos os impostos (exceto desconto)
   return totalServiceValue - pis - csll - cofins - inss - ir;
 }
 
