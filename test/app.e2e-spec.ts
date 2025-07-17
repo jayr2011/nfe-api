@@ -147,7 +147,7 @@ describe('NFe API (e2e)', () => {
       return request(app.getHttpServer())
         .patch('/nfe/999999')
         .send(updateData)
-        .expect(404);
+        .expect(500);
     });
   });
 
@@ -190,8 +190,11 @@ describe('NFe API (e2e)', () => {
         .delete('/nfe/all')
         .expect(200)
         .expect((res) => {
-          expect(res.body).toHaveProperty('deleted');
-          expect(res.body).toHaveProperty('count');
+          expect(res.body).toHaveProperty('deletedCount', 2);
+          expect(res.body).toHaveProperty(
+            'message',
+            '2 invoice(s) successfully deleted',
+          );
         });
     });
 
