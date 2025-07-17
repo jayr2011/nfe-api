@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class NfeEntity {
@@ -35,7 +40,7 @@ export class NfeEntity {
   servicesDescription: {
     serviceCode: string;
     description: string;
-    unitValue: number;
+    unitValue: string;
     quantity: number;
     discount: number;
   };
@@ -69,4 +74,7 @@ export class NfeEntity {
 
   @Column({ nullable: true, type: 'float' })
   estimatedTaxesValue?: number;
+
+  @CreateDateColumn({ type: 'datetime' })
+  createdAt: Date;
 }

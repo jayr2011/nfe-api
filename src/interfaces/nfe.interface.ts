@@ -1,4 +1,5 @@
 export default interface Nfe {
+  id: number;
   issuerData: {
     cpfCnpj: string;
     corporateName: string;
@@ -24,7 +25,7 @@ export default interface Nfe {
   servicesDescription: {
     serviceCode: string;
     description: string;
-    unitValue: number;
+    unitValue: string;
     quantity: number;
     discount: number;
   };
@@ -38,4 +39,5 @@ export default interface Nfe {
   pisPasepValue?: number;
   totalInvoiceValue: number;
   netValue: number;
+  createdAt: Date;
 }

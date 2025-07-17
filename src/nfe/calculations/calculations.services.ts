@@ -1,9 +1,9 @@
 export function calculateTotalServiceValue(
-  unitValue: number,
+  unitValue: string,
   quantity: number,
   discount: number,
 ): number {
-  return unitValue * quantity - discount;
+  return Number(unitValue) * quantity - discount;
 }
 
 export function calculatePisPasep(
@@ -50,10 +50,11 @@ export function calculateNetValue(
   pis: number,
   csll: number,
   cofins: number,
+  issqn: number,
   inss: number,
   ir: number,
 ): number {
-  return totalServiceValue - pis - csll - cofins - inss - ir;
+  return totalServiceValue - pis - csll - cofins - issqn - inss - ir;
 }
 
 export function calculateEstimatedTaxesValue(

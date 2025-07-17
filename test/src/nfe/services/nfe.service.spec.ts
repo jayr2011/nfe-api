@@ -126,13 +126,14 @@ describe('NfeService', () => {
       it('should return message if no invoices found', async () => {
         (service.deleteAll as jest.Mock).mockResolvedValue({
           message: 'No invoices found to delete',
-          deletedCount: 0,
+          deleted: false,
+          count: 0,
         });
         const result = await service.deleteAll();
         expect(result.message).toBe('No invoices found to delete');
       });
 
-      it('should return deletedCount 0 if no invoices found', async () => {
+      it('should return count 0 if no invoices found', async () => {
         (service.deleteAll as jest.Mock).mockResolvedValue({
           message: 'No invoices found to delete',
           deletedCount: 0,
@@ -150,7 +151,7 @@ describe('NfeService', () => {
         expect(result.message).toBe('3 invoice(s) successfully deleted');
       });
 
-      it('should return correct deletedCount if invoices exist', async () => {
+      it('should return correct count if invoices exist', async () => {
         (service.deleteAll as jest.Mock).mockResolvedValue({
           message: '3 invoice(s) successfully deleted',
           deletedCount: 3,
@@ -166,7 +167,7 @@ describe('NfeService', () => {
         issuerData: {},
         recipientData: {},
         servicesDescription: {
-          unitValue: 100,
+          unitValue: '100',
           quantity: 2,
           discount: 10,
         },
@@ -203,7 +204,7 @@ describe('NfeService', () => {
         issuerData: {},
         recipientData: {},
         servicesDescription: {
-          unitValue: 100,
+          unitValue: '100',
           quantity: 2,
           discount: 10,
         },
@@ -282,7 +283,7 @@ describe('NfeService', () => {
       it('should assign repo correctly', () => {
         const mockRepo = {} as any;
         const serviceInstance = new (NfeService as any)(mockRepo);
-        expect(serviceInstance.repo).toBe(mockRepo);
+        expect(serviceInstance.repository).toBe(mockRepo);
       });
     });
   });

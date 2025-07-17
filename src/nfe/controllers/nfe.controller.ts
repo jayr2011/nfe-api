@@ -71,6 +71,10 @@ export class NfeController {
       return nfe;
     } catch (error) {
       this.logger.error(`Error fetching invoice with ID: ${id}`, error);
+      // Re-throw HttpException to preserve status code
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new HttpException(
         'Error fetching invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -118,6 +122,10 @@ export class NfeController {
       return result;
     } catch (error) {
       this.logger.error(`Error deleting invoice with ID: ${id}`, error);
+      // Re-throw HttpException to preserve status code
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new HttpException(
         'Error deleting invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -125,6 +133,7 @@ export class NfeController {
     }
   }
 
+  // ...existing code...
   @Patch(':id')
   @ApiOperation({ summary: 'Update a specific NFE record by ID' })
   @ApiResponse({
@@ -149,6 +158,9 @@ export class NfeController {
       return updated;
     } catch (error) {
       this.logger.error(`Error updating invoice with ID: ${id}`, error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new HttpException(
         'Error updating invoice',
         HttpStatus.INTERNAL_SERVER_ERROR,

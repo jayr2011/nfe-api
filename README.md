@@ -1,67 +1,91 @@
-# 📄 API NFe - Sistema de Nota Fiscal Eletrônica
+# 📄 API NFe - Electronic Invoice System
 
-## 📋 Sobre o Projeto
+## 📋 About the Project
 
-API desenvolvida em NestJS para gerenciamento de Notas Fiscais Eletrônicas (NFe). O sistema permite criar, consultar e gerenciar notas fiscais com todas as informações necessárias conforme legislação brasileira.
+API developed in NestJS for managing Electronic Invoices (NFe). The system allows creating, querying, and managing invoices with all necessary information according to Brazilian legislation.
 
-## 🚀 Tecnologias Utilizadas
+## 🚀 Technologies Used
 
 - **Node.js** v20
-- **NestJS** - Framework backend
-- **TypeORM** - ORM para banco de dados
-- **SQLite** - Banco de dados
-- **Swagger** - Documentação da API
-- **Docker** - Containerização
-- **TypeScript** - Linguagem de programação
+- **NestJS** - Backend framework
+- **TypeORM** - Database ORM
+- **SQLite** - Database
+- **Swagger** - API documentation
+- **Docker** - Containerization
+- **TypeScript** - Programming language
+- **Jest** - Testing framework
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Husky** - Git hooks
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 src/
-├── entity/              # Entidades do banco de dados
-│   └── nfe.entity.ts    # Entidade NFe
-├── interfaces/          # Interfaces TypeScript
-│   └── nfe.interface.ts # Interface NFe
-├── nfe/                 # Módulo principal NFe
-│   ├── nfe.controller.ts    # Controller da API
-│   ├── nfe.service.ts       # Serviços de negócio
-│   ├── nfe.module.ts        # Módulo NFe
-│   └── calculations/        # Serviços de cálculo
+├── entity/                   # Database entities
+│   └── nfe.entity.ts        # NFe entity
+├── interfaces/              # TypeScript interfaces
+│   └── nfe.interface.ts     # NFe interface
+├── nfe/                     # Main NFe module
+│   ├── controllers/         # API controllers
+│   │   └── nfe.controller.ts
+│   ├── services/           # Business services
+│   │   └── nfe.service.ts
+│   ├── nfe.module.ts       # NFe module
+│   └── calculations/       # Calculation services
 │       └── calculations.services.ts
-├── app.module.ts        # Módulo principal da aplicação
-└── main.ts             # Arquivo de inicialização
+├── constants/              # Application constants
+│   └── aliquotas.ts       # Tax rates
+├── app.module.ts          # Main application module
+└── main.ts               # Bootstrap file
+test/
+├── src/                   # Unit tests
+│   └── nfe/
+│       ├── controllers/
+│       ├── services/
+│       ├── interfaces/
+│       └── calculations/
+├── mocks/                 # Test mocks
+│   └── nfe.mock.ts
+└── app.e2e-spec.ts       # E2E tests
 ```
 
-## 🛠️ Funcionalidades
+## 🛠️ Features
 
-- ✅ Criação de NFe com dados completos
-- ✅ Consulta de NFe por ID
-- ✅ Listagem de todas as NFe
-- ✅ Deleção de NFe por ID
-- ✅ Deleção de todas as NFe
-- ✅ Cálculos automáticos de impostos (ISSQN, COFINS, etc.)
-- ✅ Validação de dados de entrada
-- ✅ Documentação automática com Swagger
+- ✅ Complete NFe creation with all data
+- ✅ NFe query by ID
+- ✅ List all NFe records
+- ✅ Delete NFe by ID
+- ✅ Delete all NFe records
+- ✅ Update NFe by ID
+- ✅ Automatic tax calculations (ISSQN, COFINS, PIS, CSLL, INSS, IR)
+- ✅ Input data validation
+- ✅ Automatic Swagger documentation
+- ✅ Comprehensive unit and integration testing
+- ✅ Code quality with ESLint and Prettier
+- ✅ Git hooks with Husky
+- ✅ Error handling and logging
 
-## 🗄️ Banco de Dados
+## 🗄️ Database
 
-Este projeto utiliza **SQLite** como banco de dados principal:
-- **Leve e eficiente** para desenvolvimento e pequenas aplicações
-- **Sem configuração adicional** necessária
-- **Arquivo local** (`nfe.db`) para persistência de dados
-- **Ideal para** prototipagem e aplicações standalone
+This project uses **SQLite** as the main database:
+- **Lightweight and efficient** for development and small applications
+- **No additional configuration** required
+- **Local file** (`nfe.db`) for data persistence
+- **Ideal for** prototyping and standalone applications
 
-## 📚 Endpoints da API
+## 📚 API Endpoints
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST   | `/nfe/create` | Criar nova NFe |
-| GET    | `/nfe/findAll` | Listar todas as NFe |
-| GET    | `/nfe/:id` | Buscar NFe por ID |
-| DELETE | `/nfe/:id` | Deletar NFe por ID |
-| DELETE | `/nfe` | Deletar todas as NFe |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST   | `/nfe/create` | Create new NFe |
+| GET    | `/nfe/findAll` | List all NFe records |
+| GET    | `/nfe/:id` | Find NFe by ID |
+| PATCH  | `/nfe/:id` | Update NFe by ID |
+| DELETE | `/nfe/:id` | Delete NFe by ID |
+| DELETE | `/nfe/all` | Delete all NFe records |
 
-### 📝 Estrutura da NFe
+### 📝 NFe Structure
 
 ```json
 {
@@ -94,119 +118,164 @@ Este projeto utiliza **SQLite** como banco de dados principal:
     "quantity": 0,
     "discount": 0
   },
-  "aditionalInfo": "string",
-  "issqnValue": 0,
-  "cofinsValue": 0
+  "aditionalInfo": "string"
 }
 ```
 
-## 🚀 Como Executar
+### 📊 Automatic Calculations
 
-### Pré-requisitos
+The system automatically calculates:
+- **Total Invoice Value** - Based on unit value, quantity, and discount
+- **PIS/PASEP** - 1.65% rate
+- **COFINS** - 7.6% rate  
+- **CSLL** - 9% rate
+- **INSS** - 20% rate
+- **IR** - 15% rate
+- **ISSQN** - 2% rate
+- **Net Value** - Total value minus all taxes
+- **Estimated Taxes Value** - Sum of all calculated taxes
+
+## 🚀 How to Run
+
+### Prerequisites
 
 - Node.js v20+
-- Docker (opcional)
-- npm ou yarn
+- Docker (optional)
+- npm or yarn
 
-### 📦 Instalação
+### 📦 Installation
 
-1. **Clone o repositório:**
+1. **Clone the repository:**
 ```bash
-git clone <url-do-repositorio>
+git clone <repository-url>
 cd api-nfe
 ```
 
-2. **Instale as dependências:**
+2. **Install dependencies:**
 ```bash
 npm install
 ```
 
-### 🔧 Execução Local
+### 🔧 Local Execution
 
-**Desenvolvimento:**
+**Development:**
 ```bash
 npm run start:dev
 ```
 
-**Produção:**
+**Production:**
 ```bash
 npm run build
 npm run start:prod
 ```
 
-### 🐳 Execução com Docker
+### 🐳 Docker Execution
 
-**Desenvolvimento:**
+**Development:**
 ```bash
 docker-compose up
 ```
 
-**Build da imagem:**
+**Build image:**
 ```bash
 docker build -t api-nfe .
 ```
 
-## 📖 Documentação da API
+## 📖 API Documentation
 
-Após iniciar a aplicação, acesse a documentação Swagger em:
+
+
+After starting the application, access the Swagger documentation at:
+
 ```
 http://localhost:3000/api
 ```
 
-## 🧪 Testes
+## 🧪 Testing
 
-**Executar todos os testes:**
+**Run all tests:**
 ```bash
 npm run test
 ```
 
-**Testes em modo watch:**
+**Tests in watch mode:**
 ```bash
 npm run test:watch
 ```
 
-**Testes com coverage:**
+**Tests with coverage:**
 ```bash
 npm run test:cov
 ```
 
-**Testes E2E:**
+**E2E tests:**
 ```bash
 npm run test:e2e
 ```
 
-## 📊 Scripts Disponíveis
+**Pre-push validation:**
+```bash
+npm run pre-push
+```
 
-| Script | Descrição |
-|--------|-----------|
-| `npm run start` | Inicia a aplicação |
-| `npm run start:dev` | Inicia em modo desenvolvimento |
-| `npm run start:debug` | Inicia em modo debug |
-| `npm run build` | Compila o projeto |
-| `npm run format` | Formata o código |
-| `npm run lint` | Executa o linter |
+## 📊 Available Scripts
 
-## 🌍 Variáveis de Ambiente
+| Script | Description |
+|--------|-------------|
+| `npm run start` | Start the application |
+| `npm run start:dev` | Start in development mode |
+| `npm run start:debug` | Start in debug mode |
+| `npm run build` | Compile the project |
+| `npm run format` | Format the code |
+| `npm run lint` | Run the linter |
+| `npm run test` | Run unit tests |
+| `npm run test:cov` | Run tests with coverage |
+| `npm run test:e2e` | Run E2E tests |
+| `npm run pre-push` | Run pre-push validation |
+
+## 🔧 Code Quality
+
+The project includes several code quality tools:
+
+- **ESLint** - Static code analysis
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for quality checks
+- **Jest** - Testing framework with coverage
+- **TypeScript** - Static typing
+
+## 🌍 Environment Variables
 
 ```env
 NODE_ENV=development|production
 PORT=3000
 ```
 
-## 🤝 Contribuição
+## 🏗️ Architecture
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+The project follows NestJS best practices:
 
-## 👨‍💻 Autor
+- **Modular architecture** with separated concerns
+- **Service layer** for business logic
+- **Controller layer** for HTTP handling
+- **Entity layer** for data modeling
+- **Interface layer** for type definitions
+- **Calculation services** for tax computations
+- **Comprehensive testing** with mocks and integration tests
 
-Desenvolvido com ❤️ para o gerenciamento de NFe.
+## 🤝 Contributing
 
-por Jair Costa
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 👨‍💻 Author
+
+Developed with ❤️ for NFe management.
+
+by Jair Costa
 
 ---
 
-Se este projeto foi útil para você, mande uma estrela! ⭐⭐⭐⭐⭐
+If this project was useful to you, give it a star! ⭐⭐⭐⭐⭐

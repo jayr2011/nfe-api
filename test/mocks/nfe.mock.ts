@@ -25,7 +25,7 @@ export const mockNfe = {
   servicesDescription: {
     serviceCode: '001',
     description: 'Service Description',
-    unitValue: 100,
+    unitValue: '100',
     quantity: 2,
     discount: 10,
   },
@@ -38,6 +38,7 @@ export const mockNfe = {
   inssValue: 1,
   irValue: 1,
   estimatedTaxesValue: 6,
+  createdAt: new Date(),
 };
 
 export const mockNfes = [
@@ -68,7 +69,7 @@ export const mockNfes = [
     servicesDescription: {
       serviceCode: '',
       description: '',
-      unitValue: 0,
+      unitValue: '0',
       quantity: 0,
       discount: 0,
     },
@@ -81,6 +82,7 @@ export const mockNfes = [
     inssValue: 0,
     irValue: 0,
     estimatedTaxesValue: 0,
+    createdAt: new Date(),
   },
   {
     id: 2,
@@ -122,5 +124,6 @@ export const mockNfes = [
     inssValue: 0,
     irValue: 0,
     estimatedTaxesValue: 0,
+    createdAt: new Date(),
   },
 ];

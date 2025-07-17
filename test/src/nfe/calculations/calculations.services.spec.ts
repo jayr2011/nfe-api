@@ -12,7 +12,7 @@ import {
 
 describe('Calculations Services', () => {
   it('should calculate total service value', () => {
-    expect(calculateTotalServiceValue(100, 2, 10)).toBe(190);
+    expect(calculateTotalServiceValue('100', 2, 10)).toBe(190);
   });
 
   it('should calculate PIS/PASEP', () => {
@@ -40,7 +40,7 @@ describe('Calculations Services', () => {
   });
 
   it('should calculate net value', () => {
-    expect(calculateNetValue(200, 2, 2, 2, 2, 10)).toBe(182);
+    expect(calculateNetValue(200, 2, 2, 2, 2, 10, 2)).toBe(180);
   });
 
   it('should calculate estimated taxes value', () => {

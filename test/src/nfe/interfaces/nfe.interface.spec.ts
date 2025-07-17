@@ -3,6 +3,7 @@ import Nfe from '../../../../src/interfaces/nfe.interface';
 describe('Nfe interface', () => {
   it('should allow creation of a valid Nfe object', () => {
     const nfe: Nfe = {
+      id: 1,
       issuerData: {
         cpfCnpj: '12345678900',
         corporateName: 'Empresa Ltda',
@@ -28,7 +29,7 @@ describe('Nfe interface', () => {
       servicesDescription: {
         serviceCode: '001',
         description: 'Serviço de teste',
-        unitValue: 100,
+        unitValue: '100',
         quantity: 2,
         discount: 10,
       },
@@ -42,11 +43,12 @@ describe('Nfe interface', () => {
       pisPasepValue: 2,
       totalInvoiceValue: 190,
       netValue: 180,
+      createdAt: new Date(),
     };
     expect(nfe).toBeDefined();
     expect(nfe.issuerData.cpfCnpj).toBe('12345678900');
     expect(nfe.recipientData.cpfCnpj).toBe('98765432100');
-    expect(nfe.servicesDescription.unitValue).toBe(100);
+    expect(nfe.servicesDescription.unitValue).toBe('100');
     expect(nfe.totalInvoiceValue).toBe(190);
     expect(nfe.netValue).toBe(180);
   });

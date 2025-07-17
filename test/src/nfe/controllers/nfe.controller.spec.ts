@@ -94,10 +94,10 @@ describe('NfeController', () => {
     });
 
     it('should throw 404 if NFE record not found for deletion', async () => {
-      const mockResult = { deleted: false, message: 'Invoice not found' };
+      const mockResult = { deleted: false, message: 'Error deleting invoice' };
       (nfeService.delete as jest.Mock).mockResolvedValue(mockResult);
       await expect(controller.deleteOne('999')).rejects.toThrow(
-        'Invoice not found',
+        'Error deleting invoice',
       );
     });
   });

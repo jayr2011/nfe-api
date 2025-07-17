@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
-import { NfeEntity } from 'src/entity/nfe.entity';
+import { NfeEntity } from '../../entity/nfe.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -114,6 +114,15 @@ export class NfeService {
       ALIQUOTA_IR,
       ALIQUOTA_ISSQN,
     );
+    existingNfe.netValue = calculateNetValue(
+      totalServiceValue,
+      existingNfe.pisPasepValue,
+      existingNfe.csllValue,
+      existingNfe.cofinsValue,
+      existingNfe.issqnValue,
+      existingNfe.inssValue,
+      existingNfe.irValue,
+    );
     this.logger.log(`Updating invoice with ID: ${id}`);
     return this.repository.save(existingNfe);
   }
@@ -147,7 +156,8 @@ export class NfeService {
       csll,
       cofins,
       issqn,
-      nfe.servicesDescription.discount,
+      inss,
+      ir,
     );
 
     nfe.totalInvoiceValue = totalServiceValue;
