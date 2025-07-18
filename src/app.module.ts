@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { NfeModule } from './nfe/nfe.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PdfService } from './pdf/pdf.service';
+import { RenderNfeController } from './render-nfe/render-nfe.controller';
 
 @Module({
   imports: [
@@ -12,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true,
     }),
   ],
-  controllers: [],
-  providers: [],
+  providers: [PdfService],
+  controllers: [RenderNfeController],
 })
 export class AppModule {}

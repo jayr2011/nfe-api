@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NF-e Detalhada - {{issuerData.corporateName}}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 4px 6px;
+    }
+    th {
+      background-color: #ddd;
+      font-weight: bold;
+      text-align: left;
+    }
+    .header-table td {
+      border: none;
+      padding: 0;
+    }
+    .title {
+      font-weight: bold;
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      background-color: #eee;
+      font-weight: bold;
+      padding: 4px;
+      text-align: left;
+      margin-top: 20px;
+    }
+    .right {
+      text-align: right;
+    }
+    .center {
+      text-align: center;
+    }
+    .small {
+      font-size: 10px;
+    }
+    .barcode-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .barcode-container img {
+      max-width: 300px;
+      height: auto;
+      border: 1px solid #444;
+      padding: 4px;
+    }
+  </style>
+</head>
+<body>
+  <table class="header-table">
+    <tr>
+      <td class="right">
+        <div>Número / Série: {{numeroSerie}}</div>
+        <div>Data Competência: {{dataCompetencia}}</div>
+        <div>Data Emissão: {{dataEmissao}}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="title">
+        NOTA FISCAL DE SERVIÇOS ELETRÔNICA - NFS-e
+      </td>
+    </tr>
+  </table>
+
+  <h3>PRESTADOR DE SERVIÇOS</h3>
+  <table>
+    <tr>
+      <th>CNPJ/CPF</th>
+      <td>{{issuerData.cpfCnpj}}</td>
+      <th>Inscrição Estadual</th>
+      <td>{{issuerData.stateRegistration}}</td>
+      <th>Inscrição Municipal</th>
+      <td>{{issuerData.municipalRegistration}}</td>
+    </tr>
+    <tr>
+      <th>Nome / Razão Social</th>
+      <td colspan="5">{{issuerData.corporateName}}</td>
+    </tr>
+    <tr>
+      <th>Nome Fantasia</th>
+      <td colspan="5">{{issuerData.tradeName}}</td>
+    </tr>
+    <tr>
+      <th>Endereço</th>
+      <td colspan="5">{{issuerData.address}}</td>
+    </tr>
+    <tr>
+      <th>Município</th>
+      <td>{{issuerData.city}}</td>
+      <th>Telefone</th>
+      <td>{{issuerData.phone}}</td>
+      <th>E-mail</th>
+      <td>{{issuerData.email}}</td>
+    </tr>
+  </table>
+
+  <h3>TOMADOR DE SERVIÇOS</h3>
+  <table>
+    <tr>
+      <th>CNPJ/CPF</th>
+      <td>{{recipientData.cpfCnpj}}</td>
+      <th>Inscrição Estadual</th>
+      <td>{{recipientData.stateRegistration}}</td>
+      <th>Inscrição Municipal</th>
+      <td>{{recipientData.municipalRegistration}}</td>
+    </tr>
+    <tr>
+      <th>Nome / Razão Social</th>
+      <td colspan="5">{{recipientData.corporateName}}</td>
+    </tr>
+    <tr>
+      <th>Endereço</th>
+      <td colspan="5">{{recipientData.address}}</td>
+    </tr>
+    <tr>
+      <th>Município</th>
+      <td>{{recipientData.city}}</td>
+      <th>Telefone</th>
+      <td>{{recipientData.phone}}</td>
+      <th>E-mail</th>
+      <td>{{recipientData.email}}</td>
+    </tr>
+  </table>
+
+  <h3>DISCRIMINAÇÃO DOS SERVIÇOS</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Descrição</th>
+        <th>L.C. 116</th>
+        <th>Alíquota (%)</th>
+        <th>Valor Unitário</th>
+        <th>Qtd / Unid</th>
+        <th>Desconto Inc.</th>
+        <th>Valor Serviço</th>
+        <th>ISSQN</th>
+        <th>PIS/PASEP</th>
+        <th>COFINS</th>
+        <th>CSLL</th>
+        <th>INSS</th>
+        <th>IR</th>
+        <th>Valor estimado de impostos</th>
+        <th>Valor Total</th>
+        <th>Valor Líquido</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{servicesDescription.description}}</td>
+        <td>{{servicesDescription.lc116}}</td>
+        <td>{{servicesDescription.aliquota}}</td>
+        <td class="right">R$ {{servicesDescription.unitValue}}</td>
+        <td class="center">{{servicesDescription.quantity}}</td>
+        <td class="right">R$ {{servicesDescription.discount}}</td>
+        <td class="right">R$ {{servicesDescription.serviceValue}}</td>
+        <td class="right">R$ {{issqnValue}}</td>
+        <td class="right">R$ {{pisPasepValue}}</td>
+        <td class="right">R$ {{cofinsValue}}</td>
+        <td class="right">R$ {{csllValue}}</td>
+        <td class="right">R$ {{inssValue}}</td>
+        <td class="right">R$ {{irValue}}</td>
+        <td class="right">R$ {{estimatedTaxesValue}}</td>
+        <td class="right">R$ {{totalInvoiceValue}}</td>
+        <td class="right">R$ {{netValue}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="barcode-container">
+    <h3>Código de Barras</h3>
+    <img src="../src/assets/img/barcode_codabar.png" alt="Código de Barras Mock" />
+  </div>
+</body>
+</html>

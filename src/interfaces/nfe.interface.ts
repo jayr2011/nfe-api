@@ -40,4 +40,5 @@ export default interface Nfe {
   totalInvoiceValue: number;
   netValue: number;
   createdAt: Date;
+  estimatedTaxeValue?: number;
 }

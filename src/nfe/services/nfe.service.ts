@@ -85,6 +85,10 @@ export class NfeService {
     existingNfe.recipientData = nfe.recipientData;
     existingNfe.servicesDescription = nfe.servicesDescription;
     existingNfe.aditionalInfo = nfe.aditionalInfo;
+    // Corrige o valor do serviço
+    existingNfe.totalInvoiceValue =
+      nfe.totalInvoiceValue * nfe.servicesDescription.quantity -
+      nfe.servicesDescription.discount;
 
     const totalServiceValue = calculateTotalServiceValue(
       nfe.servicesDescription.unitValue,
@@ -128,6 +132,10 @@ export class NfeService {
   }
 
   create(nfe: NfeEntity): Promise<NfeEntity> {
+    nfe.totalInvoiceValue =
+      nfe.totalInvoiceValue * nfe.servicesDescription.quantity -
+      nfe.servicesDescription.discount;
+
     const totalServiceValue = calculateTotalServiceValue(
       nfe.servicesDescription.unitValue,
       nfe.servicesDescription.quantity,

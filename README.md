@@ -8,15 +8,17 @@ API developed in NestJS for managing Electronic Invoices (NFe). The system allow
 
 - **Node.js** v20
 - **NestJS** - Backend framework
-- **TypeORM** - Database ORM
+- **TypeORM** - ORM
 - **SQLite** - Database
-- **Swagger** - API documentation
+- **Swagger** - Automatic API documentation
 - **Docker** - Containerization
-- **TypeScript** - Programming language
-- **Jest** - Testing framework
-- **ESLint** - Code linting
+- **TypeScript** - Main language
+- **Jest** - Unit and integration tests
+- **ESLint** - Lint
 - **Prettier** - Code formatting
 - **Husky** - Git hooks
+- **Puppeteer** - PDF generation
+- **bwip-js** - Barcode generation
 
 ## 📁 Project Structure
 
@@ -29,30 +31,44 @@ src/
 ├── nfe/                     # Main NFe module
 │   ├── controllers/         # API controllers
 │   │   └── nfe.controller.ts
-│   ├── services/           # Business services
+│   ├── services/            # Business services
 │   │   └── nfe.service.ts
-│   ├── nfe.module.ts       # NFe module
-│   └── calculations/       # Calculation services
+│   ├── nfe.module.ts        # NFe module
+│   └── calculations/        # Calculation services
 │       └── calculations.services.ts
-├── constants/              # Application constants
-│   └── aliquotas.ts       # Tax rates
-├── app.module.ts          # Main application module
-└── main.ts               # Bootstrap file
+├── pdf/                     # PDF generation service
+│   └── pdf.service.ts
+├── render-nfe/               # PDF rendering controller/module
+│   ├── render-nfe.controller.ts
+│   ├── render-nfe.module.ts
+├── constants/                # Application constants
+│   └── aliquotas.ts         # Tax rates
+├── assets/
+│   └── img/
+│       └── barcode_codabar.png # Mock barcode image
+├── app.module.ts            # Main application module
+└── main.ts                  # Bootstrap file
 test/
-├── src/                   # Unit tests
+├── src/                     # Unit tests
 │   └── nfe/
 │       ├── controllers/
 │       ├── services/
 │       ├── interfaces/
 │       └── calculations/
-├── mocks/                 # Test mocks
+│   └── pdf/
+│       └── pdf.service.spec.ts
+│   └── render-nfe/
+│       └── render-nfe.controller.spec.ts
+├── mocks/                   # Test mocks
 │   └── nfe.mock.ts
-└── app.e2e-spec.ts       # E2E tests
+└── app.e2e-spec.ts          # E2E tests
+views/
+├── nfes.hbs                 # Handlebars template for PDF
 ```
 
 ## 🛠️ Features
 
-- ✅ Complete NFe creation with all data
+- ✅ Full NFe creation
 - ✅ NFe query by ID
 - ✅ List all NFe records
 - ✅ Delete NFe by ID
@@ -61,7 +77,11 @@ test/
 - ✅ Automatic tax calculations (ISSQN, COFINS, PIS, CSLL, INSS, IR)
 - ✅ Input data validation
 - ✅ Automatic Swagger documentation
-- ✅ Comprehensive unit and integration testing
+- ✅ Unit and integration tests (Jest)
+- ✅ PDF generation for invoices
+- ✅ Barcode generation and mocking
+- ✅ Endpoint for PDF rendering and download
+- ✅ Automated tests for PDF and rendering
 - ✅ Code quality with ESLint and Prettier
 - ✅ Git hooks with Husky
 - ✅ Error handling and logging
@@ -76,14 +96,15 @@ This project uses **SQLite** as the main database:
 
 ## 📚 API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST   | `/nfe/create` | Create new NFe |
-| GET    | `/nfe/findAll` | List all NFe records |
-| GET    | `/nfe/:id` | Find NFe by ID |
-| PATCH  | `/nfe/:id` | Update NFe by ID |
-| DELETE | `/nfe/:id` | Delete NFe by ID |
-| DELETE | `/nfe/all` | Delete all NFe records |
+| Method | Endpoint                | Description                  |
+|--------|------------------------|------------------------------|
+| POST   | `/nfe/create`          | Create new NFe               |
+| GET    | `/nfe/findAll`         | List all NFe records         |
+| GET    | `/nfe/:id`             | Find NFe by ID               |
+| PATCH  | `/nfe/:id`             | Update NFe by ID             |
+| DELETE | `/nfe/:id`             | Delete NFe by ID             |
+| DELETE | `/nfe/all`             | Delete all NFe records       |
+| GET    | `/render-nfe/pdf/:id`  | Generate and download NFe PDF|
 
 ### 📝 NFe Structure
 
@@ -125,15 +146,15 @@ This project uses **SQLite** as the main database:
 ### 📊 Automatic Calculations
 
 The system automatically calculates:
-- **Total Invoice Value** - Based on unit value, quantity, and discount
-- **PIS/PASEP** - 1.65% rate
-- **COFINS** - 7.6% rate  
-- **CSLL** - 9% rate
-- **INSS** - 20% rate
-- **IR** - 15% rate
-- **ISSQN** - 2% rate
-- **Net Value** - Total value minus all taxes
-- **Estimated Taxes Value** - Sum of all calculated taxes
+- **Total Invoice Value** (unit value, quantity, discount)
+- **PIS/PASEP** (1.65%)
+- **COFINS** (7.6%)
+- **CSLL** (9%)
+- **INSS** (20%)
+- **IR** (15%)
+- **ISSQN** (2%)
+- **Net Value** (total minus taxes)
+- **Estimated Taxes Value** (sum of all taxes)
 
 ## 🚀 How to Run
 
@@ -193,17 +214,21 @@ http://localhost:3000/api
 
 ## 🧪 Testing
 
-**Run all tests:**
+**Unit and integration tests:**
 ```bash
 npm run test
 ```
 
-**Tests in watch mode:**
+**PDF and rendering tests:**
+- `test/src/pdf/pdf.service.spec.ts`
+- `test/src/render-nfe/render-nfe.controller.spec.ts`
+
+**Watch mode:**
 ```bash
 npm run test:watch
 ```
 
-**Tests with coverage:**
+**Coverage:**
 ```bash
 npm run test:cov
 ```
@@ -236,11 +261,10 @@ npm run pre-push
 ## 🔧 Code Quality
 
 The project includes several code quality tools:
-
-- **ESLint** - Static code analysis
+- **ESLint** - Static analysis
 - **Prettier** - Code formatting
-- **Husky** - Git hooks for quality checks
-- **Jest** - Testing framework with coverage
+- **Husky** - Git hooks
+- **Jest** - Tests and coverage
 - **TypeScript** - Static typing
 
 ## 🌍 Environment Variables
@@ -253,14 +277,14 @@ PORT=3000
 ## 🏗️ Architecture
 
 The project follows NestJS best practices:
-
-- **Modular architecture** with separated concerns
-- **Service layer** for business logic
-- **Controller layer** for HTTP handling
-- **Entity layer** for data modeling
-- **Interface layer** for type definitions
-- **Calculation services** for tax computations
-- **Comprehensive testing** with mocks and integration tests
+- **Modular architecture**
+- **Services** for business logic
+- **Controllers** for HTTP routes
+- **Entities** for data modeling
+- **Interfaces** for type contracts
+- **Calculation services** for taxes
+- **Complete testing** (unit, integration, mocks)
+- **PDF and barcode generation**
 
 ## 🤝 Contributing
 
