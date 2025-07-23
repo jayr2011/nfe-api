@@ -75,6 +75,6 @@ export class NfeEntity {
   @Column({ nullable: true, type: 'float' })
   estimatedTaxesValue?: number;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 }

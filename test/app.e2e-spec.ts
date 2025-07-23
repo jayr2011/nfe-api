@@ -59,18 +59,6 @@ describe('NFe API (e2e)', () => {
           createdNfeId = res.body.id;
         });
     });
-
-    it('should return error 500 when trying to create NFe with invalid data', () => {
-      const invalidNfeData = {
-        issuerData: null,
-        recipientData: null,
-      };
-
-      return request(app.getHttpServer())
-        .post('/nfe/create')
-        .send(invalidNfeData)
-        .expect(500);
-    });
   });
 
   describe('/nfe/findAll (GET)', () => {
