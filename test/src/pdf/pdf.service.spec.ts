@@ -9,7 +9,6 @@ describe('PdfService', () => {
   });
 
   it('deve gerar um Buffer de PDF a partir de HTML', async () => {
-    // Mock do puppeteer
     const browserMock = {
       newPage: jest.fn().mockResolvedValue({
         setContent: jest.fn().mockResolvedValue(undefined),

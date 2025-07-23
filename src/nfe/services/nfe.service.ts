@@ -23,6 +23,8 @@ import {
   ALIQUOTA_IR,
   ALIQUOTA_ISSQN,
 } from '../../constants/aliquotas';
+import { NfeDto } from '../dto/nfeDto';
+import { NfeMapper } from '../mappers/nfe.mapper';
 
 @Injectable()
 export class NfeService {
@@ -33,14 +35,16 @@ export class NfeService {
 
   private readonly logger = new Logger(NfeService.name);
 
-  findAll() {
+  async findAll(): Promise<NfeDto[]> {
     this.logger.log('Fetching all invoices');
-    return this.repository.find();
+    const entities = await this.repository.find();
+    return entities.map((entity) => NfeMapper.toDto(entity));
   }
 
-  findOne(id: number): Promise<NfeEntity | null> {
+  async findOne(id: number): Promise<NfeDto | null> {
     this.logger.log(`Fetching invoice with ID: ${id}`);
-    return this.repository.findOne({ where: { id } });
+    const entity = await this.repository.findOne({ where: { id } });
+    return entity ? NfeMapper.toDto(entity) : null;
   }
 
   async delete(id: number): Promise<{ message: string; deleted: boolean }> {
@@ -74,18 +78,19 @@ export class NfeService {
     };
   }
 
-  async update(id: number, nfe: NfeEntity): Promise<NfeEntity> {
-    const existingNfe = await this.findOne(id);
+  async update(id: number, nfeDto: NfeDto): Promise<NfeEntity> {
+    const existingNfe = await this.repository.findOne({ where: { id } });
     if (!existingNfe) {
       this.logger.warn(`Invoice with ID: ${id} not found for update`);
       throw new Error('Invoice not found');
     }
 
+    const nfe = NfeMapper.toEntity(nfeDto);
+
     existingNfe.issuerData = nfe.issuerData;
     existingNfe.recipientData = nfe.recipientData;
     existingNfe.servicesDescription = nfe.servicesDescription;
     existingNfe.aditionalInfo = nfe.aditionalInfo;
-    // Corrige o valor do serviço
     existingNfe.totalInvoiceValue =
       nfe.totalInvoiceValue * nfe.servicesDescription.quantity -
       nfe.servicesDescription.discount;
@@ -131,7 +136,9 @@ export class NfeService {
     return this.repository.save(existingNfe);
   }
 
-  create(nfe: NfeEntity): Promise<NfeEntity> {
+  create(nfeDto: NfeDto): Promise<NfeEntity> {
+    const nfe = NfeMapper.toEntity(nfeDto);
+
     nfe.totalInvoiceValue =
       nfe.totalInvoiceValue * nfe.servicesDescription.quantity -
       nfe.servicesDescription.discount;

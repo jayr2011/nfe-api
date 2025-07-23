@@ -12,12 +12,18 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { NfeEntity } from '../../entity/nfe.entity';
 import { Logger } from '@nestjs/common';
+import { PdfService } from '../../pdf/pdf.service';
+import { NfeDto } from '../dto/nfeDto';
+import { NfeMapper } from '../mappers/nfe.mapper';
 
 @ApiTags('nfe')
 @Controller('nfe')
 export class NfeController {
   private readonly logger = new Logger(NfeController.name);
-  constructor(private readonly nfeService: NfeService) {}
+  constructor(
+    private readonly nfeService: NfeService,
+    private readonly PdfService: PdfService,
+  ) {}
 
   @Post('create')
   @ApiOperation({ summary: 'Create a new NFE record' })
@@ -25,10 +31,11 @@ export class NfeController {
     status: 201,
     description: 'Successfully created a new NFE record',
   })
-  async createNote(@Body() nfe: NfeEntity) {
+  async createNote(@Body() nfeDto: NfeDto) {
     try {
-      const created = await this.nfeService.create(nfe);
-      this.logger.log('Invoice created successfully');
+      const nfeEntity = NfeMapper.toEntity(nfeDto);
+      const created = await this.nfeService.create(nfeEntity);
+      this.logger.log(`Invoice with ID: ${created.id} created successfully`);
       return created;
     } catch (error) {
       this.logger.error('Error creating invoice', error);
@@ -71,7 +78,6 @@ export class NfeController {
       return nfe;
     } catch (error) {
       this.logger.error(`Error fetching invoice with ID: ${id}`, error);
-      // Re-throw HttpException to preserve status code
       if (error instanceof HttpException) {
         throw error;
       }
@@ -115,14 +121,15 @@ export class NfeController {
   async deleteOne(@Param('id') id: string) {
     try {
       const result = await this.nfeService.delete(+id);
-      if (!result.deleted) {
+      if (!result || result.deleted === false) {
+        const message = result?.message ?? 'Invoice not found';
         this.logger.warn(`Invoice with ID: ${id} not found for deletion`);
-        throw new HttpException(result.message, HttpStatus.NOT_FOUND);
+        throw new HttpException(message, HttpStatus.NOT_FOUND);
       }
+      this.logger.log(`Invoice with ID: ${id} deleted successfully`);
       return result;
     } catch (error) {
       this.logger.error(`Error deleting invoice with ID: ${id}`, error);
-      // Re-throw HttpException to preserve status code
       if (error instanceof HttpException) {
         throw error;
       }
@@ -133,7 +140,6 @@ export class NfeController {
     }
   }
 
-  // ...existing code...
   @Patch(':id')
   @ApiOperation({ summary: 'Update a specific NFE record by ID' })
   @ApiResponse({

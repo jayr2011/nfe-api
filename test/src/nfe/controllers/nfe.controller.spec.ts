@@ -1,7 +1,41 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpException } from '@nestjs/common';
 import { NfeController } from '../../../../src/nfe/controllers/nfe.controller';
 import { NfeService } from '../../../../src/nfe/services/nfe.service';
 import { mockNfe, mockNfes } from '../../../mocks/nfe.mock';
+import { PdfService } from '../../../../src/pdf/pdf.service';
+const mockNfeDto = {
+  issuerData: {
+    cpfCnpj: '12345678901',
+    corporateName: 'Empresa Teste',
+    tradeName: 'Teste LTDA',
+    address: 'Rua Teste, 123',
+    zipCode: '12345-678',
+    phone: '11999999999',
+    email: 'teste@empresa.com',
+    stateRegistration: '123456789',
+    municipalRegistration: '987654321',
+    taxRegime: 'Simples Nacional',
+  },
+  recipientData: {
+    cpfCnpj: '98765432100',
+    corporateName: 'Cliente Teste',
+    zipCode: '87654-321',
+    address: 'Av. Cliente, 456',
+    city: 'São Paulo',
+    stateRegistration: '987654321',
+    municipalRegistration: '123456789',
+    phone: '11988888888',
+  },
+  servicesDescription: {
+    serviceCode: '001',
+    description: 'Serviço de Teste',
+    unitValue: '100',
+    quantity: 2,
+    discount: 10,
+  },
+  aditionalInfo: 'Informações adicionais de teste',
+};
 
 describe('NfeController', () => {
   let controller: NfeController;
@@ -23,6 +57,12 @@ describe('NfeController', () => {
             deleteAll: jest.fn(),
           },
         },
+        {
+          provide: PdfService,
+          useValue: {
+            generatePdf: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -39,7 +79,7 @@ describe('NfeController', () => {
   describe('NFE creation', () => {
     it('should create a new NFE record', async () => {
       jest.spyOn(nfeService, 'create').mockResolvedValue(mockNfe);
-      const result = await controller.createNote(mockNfe);
+      const result = await controller.createNote(mockNfeDto);
       expect(result).toEqual(mockNfe);
     });
   });
@@ -96,6 +136,10 @@ describe('NfeController', () => {
     it('should throw 404 if NFE record not found for deletion', async () => {
       const mockResult = { deleted: false, message: 'Error deleting invoice' };
       (nfeService.delete as jest.Mock).mockResolvedValue(mockResult);
+      await expect(controller.deleteOne('999')).rejects.toThrow(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        expect.any(HttpException),
+      );
       await expect(controller.deleteOne('999')).rejects.toThrow(
         'Error deleting invoice',
       );
