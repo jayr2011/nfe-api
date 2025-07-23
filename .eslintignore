@@ -1,0 +1,4 @@
+node_modules
+dist
+.puppeteerrc.cjs
+puppeteer.config.cjs
