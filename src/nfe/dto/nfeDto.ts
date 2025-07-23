@@ -137,4 +137,7 @@ export class NfeDto {
   @IsOptional()
   @IsNumber()
   estimatedTaxesValue?: number;
+
+  @IsOptional()
+  createdAt?: Date;
 }

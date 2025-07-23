@@ -34,7 +34,26 @@ const mockNfeDto = {
     quantity: 2,
     discount: 10,
   },
+  createdAt: new Date(),
   aditionalInfo: 'Informações adicionais de teste',
+};
+
+const mockUpdtedNfeDto = {
+  aditionalInfo: '',
+  cofinsValue: undefined,
+  createdAt: undefined,
+  csllValue: undefined,
+  estimatedTaxesValue: undefined,
+  id: undefined,
+  inssValue: undefined,
+  irValue: undefined,
+  issqnValue: undefined,
+  issuerData: {},
+  netValue: 0,
+  pisPasepValue: undefined,
+  recipientData: {},
+  servicesDescription: {},
+  totalInvoiceValue: 0,
 };
 
 describe('NfeController', () => {
@@ -80,7 +99,7 @@ describe('NfeController', () => {
     it('should create a new NFE record', async () => {
       jest.spyOn(nfeService, 'create').mockResolvedValue(mockNfe);
       const result = await controller.createNote(mockNfeDto);
-      expect(result).toEqual(mockNfe);
+      expect(result).toMatchObject(mockNfe);
     });
   });
 
@@ -151,7 +170,7 @@ describe('NfeController', () => {
       const mockUpdated = { mockNfe };
       (nfeService.update as jest.Mock).mockResolvedValue(mockUpdated);
       const result = await controller.updateNote('1', mockNfe);
-      expect(result).toEqual(mockUpdated);
+      expect(result).toEqual(mockUpdtedNfeDto);
     });
 
     it('should throw 404 if NFE record not found for update', async () => {

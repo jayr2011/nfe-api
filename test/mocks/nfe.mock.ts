@@ -111,7 +111,7 @@ export const mockNfes = [
     servicesDescription: {
       serviceCode: '',
       description: '',
-      unitValue: 0,
+      unitValue: '0',
       quantity: 0,
       discount: 0,
     },

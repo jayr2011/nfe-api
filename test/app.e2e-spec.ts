@@ -124,7 +124,7 @@ describe('NFe API (e2e)', () => {
       };
 
       return request(app.getHttpServer())
-        .patch(`/nfe/${createdNfeId}`)
+        .patch(`/nfe/update/${createdNfeId}`)
         .send(updateData)
         .expect(200)
         .expect((res) => {
@@ -145,7 +145,7 @@ describe('NFe API (e2e)', () => {
       };
 
       return request(app.getHttpServer())
-        .patch('/nfe/999999')
+        .patch('/nfe/update/999999')
         .send(updateData)
         .expect(500);
     });
@@ -154,7 +154,7 @@ describe('NFe API (e2e)', () => {
   describe('/nfe/:id (DELETE)', () => {
     it('should delete a specific NFe by ID', () => {
       return request(app.getHttpServer())
-        .delete(`/nfe/${createdNfeId}`)
+        .delete(`/nfe/delete/${createdNfeId}`)
         .expect(200)
         .expect((res) => {
           expect(res.body).toHaveProperty('deleted', true);
@@ -167,7 +167,7 @@ describe('NFe API (e2e)', () => {
     });
   });
 
-  describe('/nfe/all (DELETE)', () => {
+  describe('/nfe/delete/all (DELETE)', () => {
     it('should delete all NFes', async () => {
       const nfeData = {
         issuerData: mockNfe.issuerData,
@@ -186,7 +186,7 @@ describe('NFe API (e2e)', () => {
         .send(nfeData)
         .expect(201);
 
-      return request(app.getHttpServer()).delete('/nfe/all').expect(200);
+      return request(app.getHttpServer()).delete('/nfe/delete/all').expect(200);
     });
 
     it('should confirm there are no more NFes after bulk deletion', () => {
@@ -230,7 +230,9 @@ describe('NFe API (e2e)', () => {
       expect(nfe.issqnValue).toBe(20);
       expect(nfe.estimatedTaxesValue).toBe(552.5);
       expect(nfe.netValue).toBe(447.5);
-      await request(app.getHttpServer()).delete(`/nfe/${nfe.id}`).expect(200);
+      await request(app.getHttpServer())
+        .delete(`/nfe/delete/${nfe.id}`)
+        .expect(200);
     });
   });
 });

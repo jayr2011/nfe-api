@@ -12,7 +12,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { NfeEntity } from '../../entity/nfe.entity';
 import { Logger } from '@nestjs/common';
-import { PdfService } from '../../pdf/pdf.service';
 import { NfeDto } from '../dto/nfeDto';
 import { NfeMapper } from '../mappers/nfe.mapper';
 
@@ -20,10 +19,7 @@ import { NfeMapper } from '../mappers/nfe.mapper';
 @Controller('nfe')
 export class NfeController {
   private readonly logger = new Logger(NfeController.name);
-  constructor(
-    private readonly nfeService: NfeService,
-    private readonly PdfService: PdfService,
-  ) {}
+  constructor(private readonly nfeService: NfeService) {}
 
   @Post('create')
   @ApiOperation({ summary: 'Create a new NFE record' })
@@ -33,10 +29,9 @@ export class NfeController {
   })
   async createNote(@Body() nfeDto: NfeDto) {
     try {
-      const nfeEntity = NfeMapper.toEntity(nfeDto);
-      const created = await this.nfeService.create(nfeEntity);
+      const created = await this.nfeService.create(nfeDto);
       this.logger.log(`Invoice with ID: ${created.id} created successfully`);
-      return created;
+      return NfeMapper.toDto(created);
     } catch (error) {
       this.logger.error('Error creating invoice', error);
       throw new HttpException(
@@ -88,7 +83,7 @@ export class NfeController {
     }
   }
 
-  @Delete('all')
+  @Delete('delete/all')
   @ApiOperation({ summary: 'Delete all NFE records' })
   @ApiResponse({
     status: 200,
@@ -108,7 +103,7 @@ export class NfeController {
     }
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   @ApiOperation({ summary: 'Delete a specific NFE record by ID' })
   @ApiResponse({
     status: 200,
@@ -140,7 +135,7 @@ export class NfeController {
     }
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   @ApiOperation({ summary: 'Update a specific NFE record by ID' })
   @ApiResponse({
     status: 200,
@@ -161,7 +156,7 @@ export class NfeController {
         );
       }
       this.logger.log(`Invoice with ID: ${id} updated successfully`);
-      return updated;
+      return NfeMapper.toDto(updated);
     } catch (error) {
       this.logger.error(`Error updating invoice with ID: ${id}`, error);
       if (error instanceof HttpException) {

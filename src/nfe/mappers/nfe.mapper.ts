@@ -37,6 +37,7 @@ export class NfeMapper {
     dto.totalInvoiceValue = entity.totalInvoiceValue ?? 0;
     dto.netValue = entity.netValue ?? 0;
     dto.estimatedTaxesValue = entity.estimatedTaxesValue;
+    dto.createdAt = entity.createdAt;
     return dto;
   }
 }
